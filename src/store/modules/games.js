@@ -6,7 +6,7 @@ export default {
 	namespaced: true,
 	state: {
 		games: [],
-		scoresId: [],
+		scoresId: null,
 		feedback: null
 	},
 	getters: {
@@ -15,39 +15,54 @@ export default {
 		},
 	},
 	mutations: {
-		getGames(state) {
-			let refGames = db.collection('games'),
-				refScores = db.collection('scores'),
-				arrScore = [];
+		getScores(state) {
+
+		},
+		getGames(state, arrIdGame) {
+			// let ref = db.collection('games');
+			let ref = db.collection('games');
 
 			state.games = []
 
-			//
-			// refGames.orderByKey('TE0rbIdcrwVxxHRwqglk').equalTo(null).then((doc) => {
-			// 	console.log(doc);
-			// })
-			// refScores.doc().get()
-			// 	.then(score => {
-			// 		console.log(score);
-			// 	})
-			// 	.catch((err) => {
-			// 		console.log(err.message);
-			// 	})
-
-
-			refGames.get()
+			ref.get()
 				.then(snapshot => {
-					snapshot.forEach((game, i) => {
-						// if(game.data().id != arrScore[i]) {
-							state.games.push(game.data())
-						// }
+					let tempArr = [];
+					snapshot.forEach((game) => {
+						tempArr.push(game.data())
 					})
 				})
+				.then((arr) => {
+
+					// arrIdGame.forEach((el) => {
+					// 	ref.get()
+					// 		.then(snapshot => {
+					// 			snapshot.forEach((game) => {
+					// 				if(game.id != el) {
+					// 					state.games.push(game.data())
+					// 				}
+					// 			})
+					// 		})
+					// })
+
+				})
+
+
 		}
 	},
 	actions: {
 		GETGAMES({commit}) {
-			commit('getGames')
+			let ref = db.collection('scores');
+			let arr = [];
+			ref.get()
+				.then(snapshot => {
+					snapshot.forEach((score) => {
+						let id = score.data().id_game;
+						arr.push(id)
+					})
+
+					commit('getGames', arr)
+
+				})
 		}
 	}
 }
