@@ -77,7 +77,6 @@ export default {
 			firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
 				.then(cred => {
 					// cred.user.uid
-					console.log(cred);
 					store.commit('setUser')
 					router.push({name: 'AppIndex'})
 				})

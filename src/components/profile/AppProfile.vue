@@ -4,8 +4,10 @@
 			<h3 class="deep-purple-text center">{{ user.alias }} приветушки</h3>
 			<p> {{ user }}</p>
 			<p> {{ games }}</p>
+			<!--<p> {{ fgames }}</p>-->
+			<p> {{ scores }}</p>
 		</div>
-		<AppTablesScore v-for="(game, index) in games" :key="game.id" :game="game" :user="user" />
+		<AppTablesScore v-for="game in games" :key="game.id" :game="game" :user="user"/>
 
 	</div>
 </template>
@@ -17,20 +19,20 @@
 	export default {
 		name: "AppProfile",
 		data() {
-			return {
-
-			}
+			return {}
 		},
 		components: {
 			AppTablesScore
 		},
 		created() {
 			this.$store.dispatch('games/GETGAMES', null)
+			this.$store.dispatch('games/GETSCORES', {id: this.$route.params.id})
 		},
 		computed: {
 			...mapGetters({
 				user: 'user/inUser',
 				games: 'games/inGames',
+				scores: 'games/inScores',
 			})
 		}
 	}

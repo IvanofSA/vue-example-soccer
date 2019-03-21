@@ -13,6 +13,9 @@
 		name: 'App',
 		components: {
 			AppNavbar
+		},
+		created() {
+			console.log('tut');
 		}
 	}
 </script>

@@ -10,11 +10,11 @@
 					<li v-if="!user">
 						<router-link :to="{ name: 'AppLogin'}"> Login</router-link>
 					</li>
-					<li v-if="user">
+					<li v-if="user && user.is_admin">
 						<router-link :to="{ name: 'AppAdmin'}"> Админка </router-link>
 					</li>
 					<li v-if="user">
-						<router-link :to="{ name: 'AppProfile', params: {id: user.alias}}">  {{ user.alias }}</router-link>
+						<router-link :to="{ name: 'AppProfile', params: {id: user.id}}">  {{ user.alias }}</router-link>
 					</li>
 					<li v-if="user"><a @click="logout">Logout</a></li>
 				</ul>

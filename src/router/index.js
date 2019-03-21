@@ -5,8 +5,9 @@ import AppSignup from '@/components/auth/AppSignup'
 import AppLogin from '@/components/auth/AppLogin'
 import AppProfile from '@/components/profile/AppProfile'
 import AppAdmin from '@/components/admin/AppAdmin'
+import AppTablePage from '@/components/pages/AppTablePage'
 import firebase from 'firebase'
-import db from '@/firebase/init'
+import {store} from '@/store';
 
 Vue.use(Router)
 
@@ -22,6 +23,14 @@ const router = new Router({
 			// }
 		},
 		{
+			path: '/table',
+			name: 'AppTablePage',
+			component: AppTablePage,
+			meta: {
+				requiresAuth: true
+			}
+		},
+		{
 			path: '/login',
 			name: 'AppLogin',
 			component: AppLogin
@@ -35,6 +44,9 @@ const router = new Router({
 			path: '/admin',
 			name: 'AppAdmin',
 			component: AppAdmin,
+			meta: {
+				requiresAuth: true
+			}
 		},
 		{
 			path: '/profile/:id',
@@ -61,7 +73,7 @@ router.beforeEach((to, from, next) => {
 		} else {
 			// No user is signed in. Redirect to login
 			next({
-				name: 'Login'
+				name: 'AppLogin'
 			})
 		}
 	} else {
