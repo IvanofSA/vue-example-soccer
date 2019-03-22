@@ -129,7 +129,7 @@
 							additional_time: this.additional_time.second_team,
 							penalty: this.penalty.second_team
 						},
-						date: new Date()
+						date: this.game.date
 					}).then(() => {
 						this.feedback = 'Результат записан'
 

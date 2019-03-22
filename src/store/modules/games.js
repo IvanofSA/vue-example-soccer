@@ -6,7 +6,6 @@ export default {
 	namespaced: true,
 	state: {
 		games: [],
-		fGames: [],
 		scores: [],
 		tempGames: [],
 		feedback: null
@@ -24,25 +23,26 @@ export default {
 		getScores(state, id) {
 
 			state.scores = []
-			console.log(id);
+
 			db.collection('scores').where('id_user', '==', id)
 				.onSnapshot((snapshot) => {
 					snapshot.docChanges().forEach(change => {
 						if(change.type == 'added') {
-
-							console.log(change.doc.data());
-
 							state.scores.unshift({
 								id: change.doc.data().id,
 								id_user: change.doc.data().id_user,
 								id_game: change.doc.data().id_game,
 								first_team: {
 									name: change.doc.data().first_team.name,
-									score: change.doc.data().first_team.score
+									score: change.doc.data().first_team.score,
+									additional_time: change.doc.data().first_team.additional_time,
+									penalty: change.doc.data().first_team.penalty
 								},
 								second_team: {
 									name: change.doc.data().second_team.name,
-									score: change.doc.data().second_team.score
+									score: change.doc.data().second_team.score,
+									additional_time: change.doc.data().first_team.additional_time,
+									penalty: change.doc.data().first_team.penalty
 								},
 								date: change.doc.data().date
 							})
@@ -69,7 +69,6 @@ export default {
 								date: change.doc.data().date,
 								id: change.doc.data().id
 							})
-							// state.fGames = [...state.games]
 						}
 					})
 				})
