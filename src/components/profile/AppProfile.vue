@@ -3,7 +3,6 @@
 		<div class="card" v-if="user && games">
 			<h3 class="deep-purple-text center">{{ user.alias }} Текущие ставки</h3>
 			<p> {{ scores }}</p>
-			<a href=""></a>
 			<ul class="list">
 				<li class="list__item match" v-for="(score, index) in scores" :key="index">
 					<router-link class="" :to="{ name: 'AppTablePage' }">
@@ -33,10 +32,7 @@
 			AppTablesScore
 		},
 		created() {
-
-			console.log(this.games.id);
-
-			this.$store.dispatch('games/GETGAMES', null)
+			// this.$store.dispatch('games/GETGAMES', null)
 			this.$store.dispatch('games/GETSCORES', {id: this.$route.params.id})
 		},
 		computed: {

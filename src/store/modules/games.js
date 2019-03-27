@@ -7,23 +7,25 @@ export default {
 	state: {
 		games: [],
 		scores: [],
+		allUsersScores: [],
 		tempGames: [],
-		feedback: null
+		feedback: null,
+		currentId: null
 	},
 	getters: {
 		inGames(state) {
 			return state.games
 		},
-
+		inAllScores(state) {
+			return state.allUsersScores
+		},
 		inScores(state) {
 			return state.scores
 		},
 	},
 	mutations: {
 		getScores(state, id) {
-
 			state.scores = []
-
 			db.collection('scores').where('id_user', '==', id)
 				.onSnapshot((snapshot) => {
 					snapshot.docChanges().forEach(change => {
@@ -46,15 +48,26 @@ export default {
 								},
 								date: change.doc.data().date
 							})
-							// state.fGames = [...state.games]
+
 							state.games = state.games.filter(val => val.id !== change.doc.data().id_game)
 						}
 					})
 				})
 		},
+		getAllScores(state) {
+			state.allUsersScores  = []
+			let ref = db.collection('scores');
+			ref.get()
+				.then(snapshot => {
+					snapshot.forEach(doc => {
+						if(doc) {
+							state.allUsersScores.unshift(doc.data())
+						}
+					})
+				})
+		},
+
 		getGames(state) {
-
-
 			state.games = []
 
 			db.collection('games')
@@ -65,6 +78,7 @@ export default {
 								first_team: change.doc.data().first_team,
 								second_team: change.doc.data().second_team,
 								previous_result: change.doc.data().previous_result,
+								result: change.doc.data().result,
 								info: change.doc.data().info,
 								date: change.doc.data().date,
 								id: change.doc.data().id
@@ -79,6 +93,9 @@ export default {
 	actions: {
 		GETSCORES({commit}, route) {
 			commit('getScores', route.id)
+		},
+		GETALLSCORES({commit}) {
+			commit('getAllScores')
 		},
 		GETGAMES({commit}) {
 			commit('getGames')

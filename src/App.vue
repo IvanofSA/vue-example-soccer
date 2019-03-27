@@ -15,7 +15,7 @@
 			AppNavbar
 		},
 		created() {
-			console.log('tut');
+
 		}
 	}
 </script>

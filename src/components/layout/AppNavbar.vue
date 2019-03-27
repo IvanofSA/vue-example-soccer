@@ -2,7 +2,7 @@
 	<div class="navbar">
 		<nav class="deep-purple darken-1">
 			<div class="container">
-				<router-link :to="{name: 'AppIndex'}" class="brand-logo left">Tables!</router-link>
+				<router-link :to="{name: 'AppTablePage'}" class="brand-logo left">Tables!</router-link>
 				<ul class="right">
 					<li v-if="!user">
 						<router-link :to="{ name: 'AppSignup'}"> Signup</router-link>

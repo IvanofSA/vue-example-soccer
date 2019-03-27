@@ -7,12 +7,16 @@ export default {
 	namespaced: true,
 	state: {
 		user: null,
+		users: [],
 		slug: null,
 		feedback: null
 	},
 	getters: {
 		inUser(state) {
 			return state.user
+		},
+		inUsers(state) {
+			return state.users
 		},
 		inSlug(state) {
 			return state.slug
@@ -47,7 +51,22 @@ export default {
 			}
 
 		},
+		getUsers(state) {
 
+			state.users = []
+
+			let ref = db.collection('users');
+			ref.get()
+				.then(snapshot => {
+					snapshot.forEach(doc => {
+						console.log(doc.data());
+
+						if(doc) {
+							state.users.unshift(doc.data())
+						}
+					})
+				})
+		},
 		setSlug(state, alias) {
 			state.slug = slugify(alias, {
 				replacement: '-',
@@ -72,6 +91,9 @@ export default {
 		},
 		SETMESSAGE({commit}, payload) {
 			commit('setMessage', payload)
+		},
+		GETUSERS({commit}) {
+			commit('getUsers')
 		},
 		LOGIN(store, payload) {
 			firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)

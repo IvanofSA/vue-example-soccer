@@ -132,6 +132,7 @@
 						date: this.game.date
 					}).then(() => {
 						this.feedback = 'Результат записан'
+						this.$store.dispatch('games/GETSCORES', {id: this.$route.params.id})
 
 					})
 
