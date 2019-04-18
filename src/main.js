@@ -3,7 +3,10 @@ import App from './App'
 import {store} from './store';
 import router from './router'
 import firebase from 'firebase'
+import Vuelidate from 'vuelidate'
 
+
+Vue.use(Vuelidate)
 Vue.config.productionTip = false;
 
 let app = null;

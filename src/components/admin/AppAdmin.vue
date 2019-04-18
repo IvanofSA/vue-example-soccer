@@ -1,7 +1,7 @@
 <template>
 	<div class="admin container">
 		<AppAddMatch/>
-		<AppResultCard v-for="(game, index) in games" :key="index" :game="game"/>
+		<!--<AppResultCard v-for="(game, index) in games" :key="index" :game="game"/>-->
 	</div>
 </template>
 
@@ -14,12 +14,11 @@
 
 	export default {
 		name: "AppAdmin",
-		data() {
-			return {}
-		},
-		created() {
-			this.$store.dispatch('games/GETGAMES', null)
+		data: () => ({
 
+		}),
+		created() {
+			// this.$store.dispatch('games/SETGAMES', null)
 		},
 		components: {
 			AppResultCard,
@@ -27,7 +26,7 @@
 		},
 		computed: {
 			...mapGetters({
-				games: 'games/inGames',
+				games: 'games/getGames',
 			})
 		}
 	}

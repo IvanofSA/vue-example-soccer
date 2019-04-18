@@ -35,17 +35,13 @@
 	export default {
 		name: "AppResultCard",
 		props: ['game'],
-		data() {
-			return {
-				result: {
-					first_team: null,
-					second_team: null,
-				},
-				feedback: null,
-
-			}
-		},
-
+		data: () => ({
+			result: {
+				first_team: null,
+				second_team: null,
+			},
+			feedback: null,
+		}),
 		methods: {
 			addResultMatch(id) {
 				if(this.result.second_team && this.result.first_team) {

@@ -15,13 +15,15 @@
 					<td>
 						<div class="field col">
 							<label for="first_team">Голов забьет {{ game.first_team }}</label>
-							<input type="text" placeholder="0" v-filter="'^[0-9]{1,2}$'" id="first_team" v-model="first_team_score">
+							<input type="text" placeholder="0" v-filter="'^[0-9]{1,2}$'" id="first_team"
+								   v-model="first_team_score">
 						</div>
 					</td>
 					<td>
 						<div class="field col">
 							<label for="second_team">Голов забьет {{ game.second_team }}</label>
-							<input type="text"  placeholder="0" v-filter="'^[0-9]{1,2}$'" id="second_team" v-model="second_team_score">
+							<input type="text" placeholder="0" v-filter="'^[0-9]{1,2}$'" id="second_team"
+								   v-model="second_team_score">
 						</div>
 					</td>
 				</tr>
@@ -41,7 +43,6 @@
 					</td>
 				</tr>
 				<tr v-if="checkAdditionalTime">
-
 					<td>
 						<div class="field col">
 							<label for="3"> Пенальти {{ game.first_team }}</label>
@@ -73,21 +74,19 @@
 	export default {
 		name: "AppTableScore",
 		props: ['game', 'user'],
-		data() {
-			return {
-				first_team_score: null,
-				second_team_score: null,
-				additional_time: {
-					first_team: null,
-					second_team: null
-				},
-				penalty: {
-					first_team: null,
-					second_team: null
-				},
-				feedback: null,
-			}
-		},
+		data: () => ({
+			first_team_score: null,
+			second_team_score: null,
+			additional_time: {
+				first_team: null,
+				second_team: null
+			},
+			penalty: {
+				first_team: null,
+				second_team: null
+			},
+			feedback: null,
+		}),
 		computed: {
 
 			checkPreviousResult() {
@@ -110,8 +109,8 @@
 			},
 			addScore() {
 				if(this.first_team_score && this.second_team_score) {
-					let ref = db.collection('scores').doc()
-					this.feedback = null
+					let ref = db.collection('scores').doc();
+					this.feedback = null;
 
 					db.collection('scores').add({
 						id: ref.id,
@@ -131,15 +130,13 @@
 						},
 						date: this.game.date
 					}).then(() => {
-						this.feedback = 'Результат записан'
-						this.$store.dispatch('games/GETSCORES', {id: this.$route.params.id})
+						this.feedback = 'Результат записан';
+						// this.$store.dispatch('games/CURRENTIDMATCH', this.game.id);
+
+						// this.$store.dispatch('games/SETSCORES', {id: this.$route.params.id})
 
 					})
 
-
-					setTimeout(() => {
-						this.clearFeedback()
-					}, 1500);
 				}
 			}
 		}

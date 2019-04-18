@@ -11,10 +11,10 @@
 						<router-link :to="{ name: 'AppLogin'}"> Login</router-link>
 					</li>
 					<li v-if="user && user.is_admin">
-						<router-link :to="{ name: 'AppAdmin'}"> Админка </router-link>
+						<router-link :to="{ name: 'AppAdmin'}"> Админка</router-link>
 					</li>
 					<li v-if="user">
-						<router-link :to="{ name: 'AppProfile', params: {id: user.id}}">  {{ user.alias }}</router-link>
+						<router-link :to="{ name: 'AppProfile', params: {id: user.id}}"> {{ user.alias }}</router-link>
 					</li>
 					<li v-if="user"><a @click="logout">Logout</a></li>
 				</ul>
@@ -29,14 +29,12 @@
 
 	export default {
 		name: "AppNavbar",
-		data() {
-			return {
-				profile: null
-			}
-		},
+		data: () => ({
+			profile: null
+		}),
 		computed: {
 			...mapGetters({
-				user: 'user/inUser'
+				user: 'user/getCurrentUser'
 			})
 		},
 		methods: {
@@ -45,7 +43,7 @@
 			}
 		},
 		created() {
-			this.$store.dispatch('user/SETUSER')
+			// this.$store.commit('user/setCurrentUser')
 		}
 	}
 </script>

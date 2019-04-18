@@ -6,99 +6,116 @@ export default {
 	namespaced: true,
 	state: {
 		games: [],
-		scores: [],
-		allUsersScores: [],
+		currentScore: [],
+		allScores: [],
 		tempGames: [],
 		feedback: null,
+		currentId: null,
+		idMatch: null,
 		currentId: null
 	},
 	getters: {
-		inGames(state) {
-			return state.games
-		},
-		inAllScores(state) {
-			return state.allUsersScores
-		},
-		inScores(state) {
-			return state.scores
-		},
+		getGames: state => state.games,
+		getAllScores: state => state.allScores,
+		getCurrentScore: state => state.currentScore,
+		getCurrentIdMatch: state => state.idMatch
+
+		// inGames(state) {
+		// 	return state.games
+		// },
+		// inAllScores(state) {
+		// 	return state.allUsersScores
+		// },
+		// inScores(state) {
+		// 	return state.scores
+		// },
 	},
+
 	mutations: {
-		getScores(state, id) {
-			state.scores = []
+
+		currentIdMatch(state, id) {
+			state.idMatch = id
+		},
+
+		setScores(state, id) {
+
+			state.currentScore = [];
 			db.collection('scores').where('id_user', '==', id)
 				.onSnapshot((snapshot) => {
 					snapshot.docChanges().forEach(change => {
 						if(change.type == 'added') {
-							state.scores.unshift({
-								id: change.doc.data().id,
-								id_user: change.doc.data().id_user,
-								id_game: change.doc.data().id_game,
-								first_team: {
-									name: change.doc.data().first_team.name,
-									score: change.doc.data().first_team.score,
-									additional_time: change.doc.data().first_team.additional_time,
-									penalty: change.doc.data().first_team.penalty
-								},
-								second_team: {
-									name: change.doc.data().second_team.name,
-									score: change.doc.data().second_team.score,
-									additional_time: change.doc.data().first_team.additional_time,
-									penalty: change.doc.data().first_team.penalty
-								},
-								date: change.doc.data().date
-							})
-
+							if(change.doc.data().id != state.currentId) {
+								state.currentScore.unshift(change.doc.data())
+								state.currentId = change.doc.data().id;
+							}
 							state.games = state.games.filter(val => val.id !== change.doc.data().id_game)
 						}
 					})
 				})
 		},
-		getAllScores(state) {
-			state.allUsersScores  = []
+		filterGame(state) {
+			state.currentScore.forEach(el => {
+				state.games = state.games.filter(val => val.id !== el.id_game)
+			})
+		},
+		setAllScores(state) {
+			state.allScores = [];
 			let ref = db.collection('scores');
 			ref.get()
 				.then(snapshot => {
 					snapshot.forEach(doc => {
 						if(doc) {
-							state.allUsersScores.unshift(doc.data())
+							state.allScores.unshift(doc.data())
 						}
 					})
+
 				})
 		},
 
-		getGames(state) {
-			state.games = []
-
+		setGames(state) {
+			state.games = [];
 			db.collection('games')
 				.onSnapshot((snapshot) => {
 					snapshot.docChanges().forEach(change => {
 						if(change.type == 'added') {
-							state.games.unshift({
-								first_team: change.doc.data().first_team,
-								second_team: change.doc.data().second_team,
-								previous_result: change.doc.data().previous_result,
-								result: change.doc.data().result,
-								info: change.doc.data().info,
-								date: change.doc.data().date,
-								id: change.doc.data().id
-							})
+							state.games.unshift(change.doc.data())
 						}
 					})
 				})
-
 		}
-
 	},
+
 	actions: {
-		GETSCORES({commit}, route) {
-			commit('getScores', route.id)
+		SETSCORES({commit}, route) {
+			commit('setScores', route.id)
+			// commit('filterGame')
 		},
-		GETALLSCORES({commit}) {
-			commit('getAllScores')
+		SETALLSCORES({commit}) {
+			commit('setAllScores')
 		},
-		GETGAMES({commit}) {
-			commit('getGames')
+		SETGAMES({commit}) {
+			commit('setGames')
+			// commit('filterGame')
+		},
+		CURRENTIDMATCH({commit}, id) {
+			commit('currentIdMatch', id)
+		},
+		CHECKGAMES(store, route) {
+			if(!store.getters.getGames.length) {
+				store.commit('setScores', route.id)
+			}
+
+			if(!store.getters.getCurrentScore.length) {
+				store.commit('setGames')
+			}
+
+			console.log(store.getters.getCurrentScore.length);
+			console.log(store.getters.getGames.length);
+
+			if(store.getters.getGames.length && store.getters.getCurrentScore.length) {
+				store.commit('filterGame')
+				console.log('tut');
+			}
 		}
 	}
 }

@@ -70,37 +70,23 @@
 
 	export default {
 		name: "AppAddMatch",
-		data() {
-			return {
+		data: () => ({
+			first_team: null,
+			second_team: null,
+			previous_result: {
 				first_team: null,
 				second_team: null,
-				previous_result: {
-					first_team: null,
-					second_team: null,
-				},
-				feedback: null,
-				date: null,
-				info: null,
-				previous: false
-			}
-		},
+			},
+			feedback: null,
+			date: null,
+			info: null,
+			previous: false
+		}),
 		created() {
-			this.clearFeedback()
+
 		},
 		methods: {
-			clearFeedback() {
-				this.feedback = null;
-			},
-			clearForm() {
-				this.first_team = null
-				this.second_team = null
-				this.date = null
-				this.info = null
 
-				this.previous_result.first_team = null
-				this.previous_result.second_team = null
-
-			},
 			addMatch() {
 				let isValid = false;
 				if(this.previous) {
@@ -111,6 +97,7 @@
 
 				if(isValid) {
 					let ref = db.collection('games').doc();
+
 					db.collection('games').add({
 						first_team: this.first_team,
 						second_team: this.second_team,
@@ -120,22 +107,14 @@
 						id: ref.id
 					}).then(() => {
 						this.feedback = 'Матч создан'
-						this.clearForm()
-
+						this.$store.dispatch('games/SETGAMES');
 					})
-						.catch((err) => {
-							this.feedback = err.message
-							this.clearForm()
-						});
-
-					setTimeout(() => {
-						this.clearFeedback()
-					}, 1500);
-
+					.catch((err) => {
+						this.feedback = err.message
+					});
 				} else {
 					this.feedback = 'Одно из обязательных полей не заполнено'
 				}
-
 			}
 		}
 	}

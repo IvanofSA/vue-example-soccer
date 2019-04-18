@@ -6,17 +6,11 @@
 </template>
 
 <script>
-	import {mapGetters} from 'vuex'
 	export default {
 		name: "AppIndex",
-		data() {
-			return {
+		data: () => ({
 
-			}
-		},
-		...mapGetters({
-			user: 'user/inUser'
-		})
+		}),
 	}
 </script>
 

@@ -4,11 +4,14 @@
 			<h2 class="center deep-purple-text">Login</h2>
 			<div class="field">
 				<label for="email">Email</label>
-				<input id="email" type="email" v-model="email">
+				<input id="email" type="email" v-model.lazy="$v.email.$model">
+				<span class="message" v-if="$v.email.$error "> Email заполнен не корректно </span>
+
 			</div>
 			<div class="field">
 				<label for="password">Password</label>
-				<input id="password" type="password" v-model="password">
+				<input id="password" type="password" v-model.lazy="$v.password.$model">
+				<span class="message" v-if="$v.password.$error "> Пароль должен иметь не меннее 6 символов </span>
 			</div>
 			<p v-if="feedback" class="red-text center">{{ feedback }}</p>
 			<div class="field center">
@@ -19,30 +22,46 @@
 </template>
 
 <script>
-	import {mapGetters} from 'vuex'
+
+	import firebase from 'firebase'
+	import {required, email, minLength} from "vuelidate/lib/validators";
 
 	export default {
 		name: "Login",
-		data() {
-			return {
-				email: null,
-				password: null,
+		data: () => ({
+			email: null,
+			password: null,
+			feedback: null
+		}),
+		created() {
+			this.feedback = null;
+		},
+		validations: {
+			email: {
+				required,
+				email
+			},
+			password: {
+				required,
+				minLength: minLength(6)
 			}
 		},
-		created() {
-			this.$store.dispatch('user/SETMESSAGE', null)
-		},
 		computed: {
-			...mapGetters({
-				feedback: 'user/inFeedback'
-			})
+
 		},
 		methods: {
-			login(){
-				if(this.email && this.password) {
-					this.$store.dispatch('user/LOGIN', {email: this.email, password: this.password})
-				} else {
-					return this.$store.dispatch('user/SETMESSAGE', 'Все поля должны быть заполнены')
+			login() {
+				this.$v.$touch()
+
+				if(!this.$v.$invalid) {
+					firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+						.then(cred => {
+							this.$store.dispatch('user/SETCURRENTUSER');
+							this.$router.push({name: 'AppIndex'})
+						})
+						.catch(err => {
+							this.feedback = err.message
+						})
 				}
 			}
 		}
@@ -50,6 +69,7 @@
 </script>
 
 <style>
+
 	.login {
 		max-width: 400px;
 		margin-top: 60px;
@@ -62,5 +82,11 @@
 	.login .field {
 		margin-bottom: 16px;
 	}
+
+	.message {
+		color: red;
+		font-size: 0.8em;
+	}
+
 
 </style>

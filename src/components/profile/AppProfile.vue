@@ -2,7 +2,6 @@
 	<div class="view-profile container">
 		<div class="card" v-if="user && games">
 			<h3 class="deep-purple-text center">{{ user.alias }} Текущие ставки</h3>
-			<p> {{ scores }}</p>
 			<ul class="list">
 				<li class="list__item match" v-for="(score, index) in scores" :key="index">
 					<router-link class="" :to="{ name: 'AppTablePage' }">
@@ -14,7 +13,7 @@
 				</li>
 			</ul>
 		</div>
-		<AppTablesScore v-for="game in games" :key="game.id" :game="game" :user="user"/>
+		<AppTablesScore v-for="(game, i) in games" :key="i" :game="game" :user="user"/>
 
 	</div>
 </template>
@@ -25,25 +24,28 @@
 
 	export default {
 		name: "AppProfile",
-		data() {
-			return {}
-		},
+		data: () => ({}),
 		components: {
 			AppTablesScore
 		},
 		created() {
-			// this.$store.dispatch('games/GETGAMES', null)
-			this.$store.dispatch('games/GETSCORES', {id: this.$route.params.id})
+			if(!this.games.length) {
+				this.$store.dispatch('games/SETGAMES')
+			}
+
+			this.$store.dispatch('games/SETSCORES', {id: this.$route.params.id})
+			// this.$store.dispatch('games/CHECKGAMES', {id: this.$route.params.id})
 		},
 		computed: {
 			...mapGetters({
-				user: 'user/inUser',
-				games: 'games/inGames',
-				scores: 'games/inScores',
+				user: 'user/getCurrentUser',
+				games: 'games/getGames',
+				scores: 'games/getCurrentScore',
 			})
 		}
 	}
 </script>
+
 
 <style>
 	.view-profile .card {
@@ -69,23 +71,27 @@
 		border-bottom: 0;
 	}
 
-	.list .list__item a{
+	.list .list__item a {
 		display: flex;
 		flex-flow: row;
 		align-items: center;
 		justify-content: flex-start;
 	}
+
 	.match .match__date {
 		width: 150px;
 	}
+
 	.match .match__game {
 		text-align: center;
 		width: 150px;
 	}
+
 	.match .match__score {
 		text-align: center;
 		width: calc(100% - 300px);
 	}
+
 	i.ml-auto {
 		color: rgba(0, 0, 0, 0.26);
 	}

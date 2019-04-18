@@ -34,14 +34,13 @@
 
 	export default {
 		name: "AppTablePage",
-		data() {
-			return {
-			}
-		},
+		data: () => ({
+
+		}),
 		created() {
 			this.$store.dispatch('user/GETUSERS', null)
-			this.$store.dispatch('games/GETGAMES', null)
-			this.$store.dispatch('games/GETALLSCORES', null)
+			// this.$store.dispatch('games/GETGAMES', null)
+			// this.$store.dispatch('games/GETALLSCORES', null)
 		},
 		methods: {
 			filterItems(arr, id) {
@@ -55,10 +54,7 @@
 				users: 'user/inUsers',
 				games: 'games/inGames',
 				scores: 'games/inAllScores',
-			}),
-			scoreForUser() {
-
-			}
+			})
 		}
 	}
 </script>

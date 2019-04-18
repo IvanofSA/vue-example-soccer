@@ -15,6 +15,7 @@
 			AppNavbar
 		},
 		created() {
+			this.$store.commit('user/setCurrentUser')
 
 		}
 	}
