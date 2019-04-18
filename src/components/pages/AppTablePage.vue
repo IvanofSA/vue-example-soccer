@@ -16,8 +16,7 @@
 			<tr v-for="(score, index) in filterItems(scores, game.id)" :key="score.id">
 				<td>{{ score.id_user }}</td>
 				<td>{{ score.first_team.score }} - {{ score.second_team.score }}</td>
-				<td>{{ game.result.first_team }} - {{ game.result.second_team }}</td>
-				<td>0</td>
+				<td v-if="game.result">{{ game.result.first_team }} - {{ game.result.second_team }}</td>
 			</tr>
 			</tbody>
 		</table>
@@ -38,9 +37,9 @@
 
 		}),
 		created() {
-			this.$store.dispatch('user/GETUSERS', null)
-			// this.$store.dispatch('games/GETGAMES', null)
-			// this.$store.dispatch('games/GETALLSCORES', null)
+			this.$store.dispatch('user/SETALLUSER', null)
+			this.$store.dispatch('games/SETGAMES', null)
+			this.$store.dispatch('games/SETALLSCORES', null)
 		},
 		methods: {
 			filterItems(arr, id) {
@@ -51,9 +50,9 @@
 		},
 		computed: {
 			...mapGetters({
-				users: 'user/inUsers',
-				games: 'games/inGames',
-				scores: 'games/inAllScores',
+				users: 'user/getCurrentUser',
+				games: 'games/getGames',
+				scores: 'games/getAllScores',
 			})
 		}
 	}

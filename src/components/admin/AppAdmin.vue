@@ -1,7 +1,7 @@
 <template>
 	<div class="admin container">
 		<AppAddMatch/>
-		<!--<AppResultCard v-for="(game, index) in games" :key="index" :game="game"/>-->
+		<AppResultCard v-for="(game, index) in games" :key="index" :game="game"/>
 	</div>
 </template>
 
@@ -18,7 +18,7 @@
 
 		}),
 		created() {
-			// this.$store.dispatch('games/SETGAMES', null)
+			this.$store.dispatch('games/SETGAMES', null)
 		},
 		components: {
 			AppResultCard,

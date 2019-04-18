@@ -1,6 +1,6 @@
 <template>
 	<div class="view-profile container">
-		<div class="card" v-if="user && games">
+		<div class="card" v-if="user">
 			<h3 class="deep-purple-text center">{{ user.alias }} Текущие ставки</h3>
 			<ul class="list">
 				<li class="list__item match" v-for="(score, index) in scores" :key="index">
@@ -13,7 +13,7 @@
 				</li>
 			</ul>
 		</div>
-		<AppTablesScore v-for="(game, i) in games" :key="i" :game="game" :user="user"/>
+		<AppTablesScore v-if="games" v-for="(game, i) in games" :key="i" :game="game" :user="user"/>
 
 	</div>
 </template>
@@ -32,6 +32,8 @@
 			if(!this.games.length) {
 				this.$store.dispatch('games/SETGAMES')
 			}
+
+			console.log('tut');
 
 			this.$store.dispatch('games/SETSCORES', {id: this.$route.params.id})
 			// this.$store.dispatch('games/CHECKGAMES', {id: this.$route.params.id})

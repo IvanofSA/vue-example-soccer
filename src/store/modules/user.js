@@ -6,7 +6,7 @@ export default {
 	namespaced: true,
 	state: {
 		user: null,
-		allUsers: [],
+		all: [],
 		slug: null,
 		feedback: null
 	},
@@ -35,6 +35,22 @@ export default {
 					})
 			}
 		},
+		setAllUsers(state) {
+
+			state.all = []
+
+			let ref = db.collection('users');
+			ref.get()
+				.then(snapshot => {
+					snapshot.forEach(doc => {
+						console.log(doc.data());
+
+						if(doc) {
+							state.all.unshift(doc.data())
+						}
+					})
+				})
+		},
 		logout(state) {
 			firebase.auth().signOut().then(() => {
 				state.user = null;
@@ -48,6 +64,9 @@ export default {
 		},
 		SETCURRENTUSER({commit}) {
 			commit('setCurrentUser')
-		}
+		},
+		SETALLUSER({commit}) {
+			commit('setAllUsers')
+		},
 	}
 }

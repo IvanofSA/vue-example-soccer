@@ -12,23 +12,12 @@ export default {
 		feedback: null,
 		currentId: null,
 		idMatch: null,
-		currentId: null
 	},
 	getters: {
 		getGames: state => state.games,
 		getAllScores: state => state.allScores,
 		getCurrentScore: state => state.currentScore,
 		getCurrentIdMatch: state => state.idMatch
-
-		// inGames(state) {
-		// 	return state.games
-		// },
-		// inAllScores(state) {
-		// 	return state.allUsersScores
-		// },
-		// inScores(state) {
-		// 	return state.scores
-		// },
 	},
 
 	mutations: {
@@ -64,7 +53,7 @@ export default {
 			ref.get()
 				.then(snapshot => {
 					snapshot.forEach(doc => {
-						if(doc) {
+						if(doc.data()) {
 							state.allScores.unshift(doc.data())
 						}
 					})
@@ -109,12 +98,8 @@ export default {
 				store.commit('setGames')
 			}
 
-			console.log(store.getters.getCurrentScore.length);
-			console.log(store.getters.getGames.length);
-
 			if(store.getters.getGames.length && store.getters.getCurrentScore.length) {
 				store.commit('filterGame')
-				console.log('tut');
 			}
 		}
 	}
