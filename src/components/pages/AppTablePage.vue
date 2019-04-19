@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="card-panel" v-for="(game, index) in games" :key="index">
 			<table class="table table--light">
-				<caption>{{game.first_team}} - {{ game.second_team }} {{ game.result.first_team }} - {{ game.result.second_team }}</caption>
+				<caption> <span>{{game.first_team}} - {{ game.second_team }}</span> <span v-if="game.result" >{{ game.result.first_team }} - {{ game.result.second_team }}</span></caption>
 
 				<thead>
 				<tr>

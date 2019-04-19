@@ -1,7 +1,7 @@
 <template>
 	<div class="admin container">
 		<AppAddMatch/>
-		<AppResultCard v-for="(game, index) in games" :key="index" :game="game"/>
+		<AppResultCard v-for="(game, index) in games" :key="index" :game="game" v-if="!game.result"/>
 	</div>
 </template>
 
