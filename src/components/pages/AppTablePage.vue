@@ -2,7 +2,8 @@
 	<div class="container">
 		<div class="card-panel" v-for="(game, index) in games" :key="index">
 			<table class="table table--light">
-				<caption> <span>{{game.first_team}} - {{ game.second_team }}</span> <span v-if="game.result" >{{ game.result.first_team }} - {{ game.result.second_team }}</span></caption>
+				<caption><span>{{game.first_team}} <span v-if="game.result">{{ game.result.first_team }} - {{ game.result.second_team }}</span> {{ game.second_team }}</span>
+				</caption>
 
 				<thead>
 				<tr>
@@ -13,17 +14,19 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr v-for="score in filterItems(scores, game.id)" :key="score.id">
+				<tr v-for="score in filterItems(scores, game.id)" :key="score.id" :class="[score.result.status == 'full_win' ? 'success' : (score.result.status == 'win' ? 'winner' : '')]">
 					<td data-label="Имя">{{ score.id_user }}</td>
 					<td data-label='Ставка'>{{ score.first_team.score }} - {{ score.second_team.score }}
 					</td>
 					<!--<td data-label='Итоговый результат' v-if="game.result">{{ game.result.first_team }} - {{-->
-						<!--game.result.second_team }}-->
+					<!--game.result.second_team }}-->
 					<!--</td>-->
-					<td data-label="Количество очков">0</td>
+					<td data-label="Количество очков" v-if="score.result" > {{ score.result.total }} </td>
 				</tr>
 				</tbody>
 			</table>
+
+			<!--<p> {{ scores }}</p>-->
 		</div>
 	</div>
 </template>
@@ -43,7 +46,6 @@
 			this.$store.dispatch('games/SETALLSCORES', null)
 		},
 		methods: {
-
 			filterItems(arr, id) {
 				return arr.filter((el) => {
 					return el.id_game === id
@@ -64,20 +66,21 @@
 <style scoped lang="scss">
 
 	.is-show {
-		display: block!important;
+		display: block !important;
 
 		@media only screen and (min-width: 48rem) {
-			display: table-cell!important;
+			display: table-cell !important;
 		}
 	}
 
 	.is-hide {
-		display: none!important;
+		display: none !important;
 
 		@media only screen and (min-width: 48rem) {
-			display: table-cell!important;
+			display: table-cell !important;
 		}
 	}
+
 	// MIXINS
 	@mixin createTable {
 		width: 90%;
@@ -107,6 +110,14 @@
 			padding: 0.5rem 0;
 			border: 1px solid #DDD;
 			border-bottom: 3px solid #DDD;
+
+			&.success {
+				background-color: lightgreen;
+			}
+			&.winner {
+				background-color: lightyellow;
+
+			}
 		}
 
 		td {
@@ -159,13 +170,12 @@
 				display: table-row-group;
 			}
 
-
 			tr {
 				display: table-row;
 				border: 0;
 
 				/*&:not(:last-child) {*/
-					border-bottom: 1px dotted #DDD;
+				border-bottom: 1px dotted #DDD;
 				/*}*/
 				&.table__row--selected {
 					background-color: rgba(94, 53, 173, 0.6);

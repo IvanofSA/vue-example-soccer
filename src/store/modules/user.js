@@ -43,8 +43,6 @@ export default {
 			ref.get()
 				.then(snapshot => {
 					snapshot.forEach(doc => {
-						console.log(doc.data());
-
 						if(doc) {
 							state.all.unshift(doc.data())
 						}

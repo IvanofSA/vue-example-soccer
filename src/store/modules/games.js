@@ -21,26 +21,26 @@ export default {
 	},
 
 	mutations: {
-
 		currentIdMatch(state, id) {
 			state.idMatch = id
 		},
-
 		setScores(state, id) {
-
 			state.currentScore = [];
 			db.collection('scores').where('id_user', '==', id)
 				.onSnapshot((snapshot) => {
 					snapshot.docChanges().forEach(change => {
+						let data = change.doc.data();
 						if(change.type == 'added') {
-							if(change.doc.data().id != state.currentId) {
-								state.currentScore.unshift(change.doc.data())
-								state.currentId = change.doc.data().id;
+							if(data.id != state.currentId) {
+								state.currentScore.unshift(data)
+								state.currentId = data.id;
 							}
-							state.games = state.games.filter(val => val.id !== change.doc.data().id_game)
+							state.games = state.games.filter(val => val.id !== data.id_game)
 						}
 					})
 				})
+
+
 		},
 		filterGame(state) {
 			state.currentScore.forEach(el => {
@@ -50,14 +50,79 @@ export default {
 		setAllScores(state) {
 			state.allScores = [];
 			let ref = db.collection('scores');
+
 			ref.get()
 				.then(snapshot => {
 					snapshot.forEach(doc => {
-						if(doc.data()) {
-							state.allScores.unshift(doc.data())
+						let score = doc.data();
+						let winnerscore = null;
+						if(score.first_team.score == score.second_team.score){
+							score.winnerscore = 0
+						} else if(score.first_team.score >= score.second_team.score){
+							score.winnerscore = 1
+						} else {
+							score.winnerscore = 2
+						}
+						//Todo Переделать проверку
+						//Todo Добавить проверку времени матча + добавления очков
+						state.games.forEach(game => {
+
+							let winnergame = null;
+
+							if(game.result.first_team == game.result.second_team){
+								game.winnergame = 0
+							} else if(game.result.first_team  >= game.result.second_team) {
+								game.winnergame = 1
+							} else {
+								game.winnergame = 2
+							}
+
+							if(game.first_team == score.first_team.name && game.second_team == score.second_team.name) {
+								if(game.result.first_team === score.first_team.score && game.result.second_team === score.second_team.score) {
+									score.result = {
+										total: 0,
+										point: 3,
+										status: 'full_win'
+									}
+								} else {
+									if(game.winnergame == score.winnerscore) {
+										score.result = {
+											total: 0,
+											point: 1,
+											status: 'win'
+										}
+									} else {
+										score.result = {
+											total: 0,
+											point: 0,
+											status: 'lose'
+										}
+									}
+								}
+
+
+							}
+
+
+
+						})
+
+						if(score) {
+							state.allScores.unshift(score)
 						}
 					})
-
+				})
+				.then(() => {
+					// state.games.forEach(game => {
+					// 	state.allScores.forEach(score => {
+					// 		if(game.first_team == score.first_team.name && game.second_team == score.second_team.name) {
+					// 			if(game.result.first_team === score.first_team.score && game.result.second_team === score.second_team.score) {
+					// 				console.log('tut');
+					// 				score.result = 'win'
+					// 			}
+					// 		}
+					// 	})
+					// })
 				})
 		},
 
