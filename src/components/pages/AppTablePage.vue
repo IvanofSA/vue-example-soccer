@@ -14,7 +14,7 @@
 				</tr>
 				</thead>
 				<tbody>
-				<tr v-for="score in filterItems(scores, game.id)" :key="score.id" :class="[score.result.status == 'full_win' ? 'success' : (score.result.status == 'win' ? 'winner' : '')]">
+				<tr v-for="score in filterItems(scores, game.id)" :key="score.id" :class="checkStatus(score)">
 					<td data-label="Имя">{{ score.id_user }}</td>
 					<td data-label='Ставка'>{{ score.first_team.score }} - {{ score.second_team.score }}
 					</td>
@@ -50,6 +50,9 @@
 				return arr.filter((el) => {
 					return el.id_game === id
 				})
+			},
+			checkStatus(score) {
+				return score.result ? (score.result.status == 'full_win' ? 'success' : (score.result.status == 'win' ? 'winner' : '')): ''
 			}
 		},
 		computed: {
@@ -58,6 +61,8 @@
 				games: 'games/getGames',
 				scores: 'games/getAllScores',
 			}),
+
+
 		}
 	}
 </script>

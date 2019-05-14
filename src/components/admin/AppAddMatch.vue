@@ -15,7 +15,7 @@
 		<div class="row">
 			<div class="field col s12">
 				<label for="date">Дата матча*</label>
-				<input id="date" type="text" v-mask="{mask: '99/99/9999', greedy: true}" v-model="date">
+				<input id="date" type="text" v-mask="{mask: '99-99-9999', greedy: true}" v-model="date">
 			</div>
 		</div>
 		<div class="row">

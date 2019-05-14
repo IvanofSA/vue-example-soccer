@@ -39,8 +39,6 @@ export default {
 						}
 					})
 				})
-
-
 		},
 		filterGame(state) {
 			state.currentScore.forEach(el => {
@@ -66,36 +64,41 @@ export default {
 						//Todo Переделать проверку
 						//Todo Добавить проверку времени матча + добавления очков
 						state.games.forEach(game => {
+							let winnergame = null,
+							 	gameDate = new Date(game.date.replace(/(\d+)-(\d+)-(\d+)/, '$3/$2/$1')),
+								currentDate = new Date();
 
-							let winnergame = null;
 
-							if(game.result.first_team == game.result.second_team){
-								game.winnergame = 0
-							} else if(game.result.first_team  >= game.result.second_team) {
-								game.winnergame = 1
-							} else {
-								game.winnergame = 2
-							}
+							if(game.result && gameDate.getTime() < currentDate.getTime()) {
 
-							if(game.first_team == score.first_team.name && game.second_team == score.second_team.name) {
-								if(game.result.first_team === score.first_team.score && game.result.second_team === score.second_team.score) {
-									score.result = {
-										total: 0,
-										point: 3,
-										status: 'full_win'
-									}
+								if(game.result.first_team == game.result.second_team){
+									game.winnergame = 0
+								} else if(game.result.first_team  >= game.result.second_team) {
+									game.winnergame = 1
 								} else {
-									if(game.winnergame == score.winnerscore) {
+									game.winnergame = 2
+								}
+
+								if(game.first_team == score.first_team.name && game.second_team == score.second_team.name) {
+									if(game.result.first_team === score.first_team.score && game.result.second_team === score.second_team.score) {
 										score.result = {
 											total: 0,
-											point: 1,
-											status: 'win'
+											point: 3,
+											status: 'full_win'
 										}
 									} else {
-										score.result = {
-											total: 0,
-											point: 0,
-											status: 'lose'
+										if(game.winnergame == score.winnerscore) {
+											score.result = {
+												total: 0,
+												point: 1,
+												status: 'win'
+											}
+										} else {
+											score.result = {
+												total: 0,
+												point: 0,
+												status: 'lose'
+											}
 										}
 									}
 								}
@@ -103,14 +106,18 @@ export default {
 
 							}
 
-
-
 						})
 
 						if(score) {
 							state.allScores.unshift(score)
 						}
+
+						ref.push().set({
+							result: score.result
+						});
 					})
+
+
 				})
 				.then(() => {
 					// state.games.forEach(game => {
