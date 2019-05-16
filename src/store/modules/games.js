@@ -53,86 +53,30 @@ export default {
 				.then(snapshot => {
 					snapshot.forEach(doc => {
 						let score = doc.data();
-						let winnerscore = null;
-						if(score.first_team.score == score.second_team.score){
-							score.winnerscore = 0
-						} else if(score.first_team.score >= score.second_team.score){
-							score.winnerscore = 1
-						} else {
-							score.winnerscore = 2
-						}
-						//Todo Переделать проверку
-						//Todo Добавить проверку времени матча + добавления очков
-						state.games.forEach(game => {
-							let winnergame = null,
-							 	gameDate = new Date(game.date.replace(/(\d+)-(\d+)-(\d+)/, '$3/$2/$1')),
-								currentDate = new Date();
-
-
-							if(game.result && gameDate.getTime() < currentDate.getTime()) {
-
-								if(game.result.first_team == game.result.second_team){
-									game.winnergame = 0
-								} else if(game.result.first_team  >= game.result.second_team) {
-									game.winnergame = 1
-								} else {
-									game.winnergame = 2
-								}
-
-								if(game.first_team == score.first_team.name && game.second_team == score.second_team.name) {
-									if(game.result.first_team === score.first_team.score && game.result.second_team === score.second_team.score) {
-										score.result = {
-											total: 0,
-											point: 3,
-											status: 'full_win'
-										}
-									} else {
-										if(game.winnergame == score.winnerscore) {
-											score.result = {
-												total: 0,
-												point: 1,
-												status: 'win'
-											}
-										} else {
-											score.result = {
-												total: 0,
-												point: 0,
-												status: 'lose'
-											}
-										}
-									}
-								}
-
-
-							}
-
-						})
-
 						if(score) {
 							state.allScores.unshift(score)
 						}
-
-						ref.push().set({
-							result: score.result
-						});
 					})
-
-
 				})
 				.then(() => {
-					// state.games.forEach(game => {
-					// 	state.allScores.forEach(score => {
-					// 		if(game.first_team == score.first_team.name && game.second_team == score.second_team.name) {
-					// 			if(game.result.first_team === score.first_team.score && game.result.second_team === score.second_team.score) {
-					// 				console.log('tut');
-					// 				score.result = 'win'
-					// 			}
-					// 		}
-					// 	})
-					// })
+
+
+					state.games.forEach(game => {
+						state.allScores.forEach(score => {
+							if(game.first_team == score.first_team.name && game.second_team == score.second_team.name) {
+								if(game.result.first_team === score.first_team.score && game.result.second_team === score.second_team.score) {
+									console.log('ugadano');
+									// score.result = {
+									// 	status: 'win',
+									// 	total: 0,
+									// 	point: 3
+									// }
+								}
+							}
+						})
+					})
 				})
 		},
-
 		setGames(state) {
 			state.games = [];
 			db.collection('games')
@@ -173,6 +117,8 @@ export default {
 			if(store.getters.getGames.length && store.getters.getCurrentScore.length) {
 				store.commit('filterGame')
 			}
+
+
 		}
 	}
 }

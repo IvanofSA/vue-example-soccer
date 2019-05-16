@@ -6,7 +6,7 @@
 </template>
 
 <script>
-	import AppResultCard from '@/components/admin/AppResultCard'
+	import AppResultCard from '@/components/card/AppResultCard'
 	import AppAddMatch from '@/components/admin/AppAddMatch'
 
 	import {mapGetters} from 'vuex'
